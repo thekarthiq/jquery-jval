@@ -1,6 +1,6 @@
 /*
  * jVal - dynamic jquery form field validation framework
- *	version 0.1.1
+ *	version 0.1.2
  * Author: Jim Palmer
  * Released under MIT license.
  */
@@ -8,7 +8,7 @@
 	function showWarning (selectElement, message, autoHide, styleType) {
 		$(selectElement).each(function(ind) {
 				var par = $(this).parent().get(0);
-				$(this).css({'position':'','borderColor':'red'}).parent().find('.jfVal').stop().remove();
+				$(this).css({'margin-top':'','position':'','borderColor':'red'}).parent().find('.jfVal').stop().remove();
 				$(par).find('.jValRelWrap').remove().end().append('<div class="jValRelWrap" style="display:none;"></div>').find('.jValRelWrap').append($(this).clone());
 				var fieldWidth = $(par).find('.jValRelWrap').width(), fieldHeight = $(par).find('.jValRelWrap').height();
 				$(par).find('.jValRelWrap').css({'width':fieldWidth,'height':fieldHeight}).empty();
@@ -33,9 +33,9 @@
 					$(par).find('.spacer').width( 0 ).animate({'width':spacerWidth}, 200);
 					$(par).find('.jfVal').css('opacity', 0).animate({'opacity':1}, 400);
 				}
-				$(this).css({'top':($(this).offset()).top,'left':($(this).offset()).left,'position':'absolute'}).parent().find('.jValRelWrap').css('display', 'block');
+				$(this).css(($.browser.msie) ? {'margin-top':1,'position':'absolute'} : {'position':'absolute'}).parent().find('.jValRelWrap').css('display', 'block');
 			});
-	}
+	};
 	function valKey (keyRE, e, cF, cA) {
 		if ( !(keyRE instanceof RegExp) ) return false;
 		if ( /^13$/.test(String(e.keyCode || e.charCode)) ) {
@@ -49,7 +49,7 @@
 		} else {
 			return 0;
 		}
-	}
+	};
 	$.fn.jVal = function () {
 		$(this).stop().find('.jfVal').stop().remove();
 		var passVal = true;
@@ -66,7 +66,7 @@
 				} catch(e) { return true; }
 			});
 		return passVal;
-	}
+	};
 	$(document).ready( function () {
 			$('input[jVal]').bind("blur", function (e) {
 					$(this).parent().jVal();

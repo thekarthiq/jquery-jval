@@ -13,7 +13,7 @@
 	</style>
 </head>
 <body marginheight=0 marginwidth=0 topmargin=0 rightmargin=0 leftmargin=0>
-	<table border=0 id="formContainer">
+	<table border=0 id="formContainer" style="padding:10px;">
 		<tr>
 			<td align=right style="padding-right:5px; color:#000;">
 				First Name
@@ -65,7 +65,7 @@
 		<tr>
 			<td></td>
 			<td style="padding:5px;">
-				<input type=button value="submit form" onClick="$('#formContainer').jVal();">
+				<input type=button value="submit form" onClick="if ( $('#formContainer').jVal() ) alert('success - submit form');">
 			</td>
 		</tr>
 	</table>
