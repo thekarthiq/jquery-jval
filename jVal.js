@@ -1,6 +1,6 @@
 /*
  * jVal - dynamic jquery form field validation framework
- *	version 0.1
+ *	version 0.1.1
  * Author: Jim Palmer
  * Released under MIT license.
  */
@@ -52,16 +52,20 @@
 	}
 	$.fn.jVal = function () {
 		$(this).stop().find('.jfVal').stop().remove();
+		var passVal = true;
 		$(this).find('[jVal]').css('borderColor', '').each( function () {
 				try {
 					eval( 'var cmd = ' + $(this).attr('jVal') + ';' );
 					if ( cmd instanceof Object && ( cmd.valid instanceof RegExp && !cmd.valid.test($(this).val()) ) || ( cmd.valid instanceof Function && !cmd.valid($(this).val()) ) ) {
 						showWarning(this, cmd.message || $.fn.jVal.defaultMessage, cmd.autoHide || false, cmd.styleType || 'pod');
+						passVal = false;
 					} else if ( ( cmd instanceof RegExp && !cmd.test($(this).val()) ) || ( cmd instanceof Function && !cmd($(this).val()) ) ) {
 						showWarning(this, $.fn.jVal.defaultMessage);
+						passVal = false;
 					}
 				} catch(e) { return true; }
 			});
+		return passVal;
 	}
 	$(document).ready( function () {
 			$('input[jVal]').bind("blur", function (e) {
