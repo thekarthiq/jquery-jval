@@ -1,40 +1,57 @@
 /*
  * jVal - dynamic jquery form field validation framework
- *	version 0.1.3
+ *	version 0.1.4
  * Author: Jim Palmer
  * Released under MIT license.
  */
 (function($) {
-	function showWarning (selectElement, message, autoHide, styleType) {
-		$(selectElement).each(function(ind) {
-				var par = $(this).parent().get(0);
-				$(this).css({'margin-top':'','position':'','borderColor':'red'}).parent().find('.jfVal').stop().remove();
-				$(par).find('.jValRelWrap').remove().end().append('<div class="jValRelWrap" style="display:none;"></div>').find('.jValRelWrap').append($(this).clone());
-				var fieldWidth = $(par).find('.jValRelWrap').width(), fieldHeight = $(par).find('.jValRelWrap').height();
-				$(par).find('.jValRelWrap').css({'width':fieldWidth,'height':fieldHeight}).empty();
-				var paddedHeight = (fieldHeight + ($.fn.jVal.defaultPadding * 2));
-				$(this).before(
-					'<div class="jfVal' + ( styleType ? ' jfVal' + styleType : '' ) + '" style="left:' + ($(this).position().left - $.fn.jVal.defaultPadding - $.fn.jVal.defaultBorderWidth) + 'px; ' +
-						'top:' + ($(this).position().top - $.fn.jVal.defaultPadding - $.fn.jVal.defaultBorderWidth + $.fn.jVal.IETopNudge) + 'px;">' +
-						( (styleType == 'pod') ? '<div class="spacerBorder" style="height:' + paddedHeight + 'px;">' : '' ) + 
-							'<div class="spacer' + ( styleType ? ' spacer' + styleType : '' ) + '" style="height:' + paddedHeight + 'px;"></div>' +
-						( (styleType == 'pod') ? '</div>' : '' ) + 
-						'<div class="icon' + ( styleType ? ' icon' + styleType : '' ) + '" style="height:' + paddedHeight + 'px;"><div class="iconbg"></div></div>' +
-						'<div class="content' + ( styleType ? ' content' + styleType : '' ) + '" style="height:' + paddedHeight + 'px; line-height:' + paddedHeight + 'px;">' + message + '</div>' +
-					'</div>');
-				var spacerWidth = fieldWidth + ($.fn.jVal.defaultPadding * 2) + 8;
-				$(par).find(styleType == 'pod' ? '.spacerBorder' : '.jfVal').css('padding', parseInt($.fn.jVal.defaultBorderWidth) + 'px').corner("round tr br 3px");
-				$(par).find('.jfVal').width( spacerWidth + $(par).find('.icon').width() + $(par).find('.content').width() + $.fn.jVal.defaultPadding + $.fn.jVal.defaultBorderWidth);
-				if ( autoHide ) {
-					$(par).find('.spacer').width( spacerWidth ).animate({'opacity':0.95}, 2000).animate({'width':0}, 200);
-					$(par).find('.jfVal').css({'opacity':0.93,'borderWidth':0}).animate({'borderWidth':0}, 2000).animate({'opacity':0}, 200, function() { $(this).remove(); });
-					$(this).stop().animate({'opacity':0.95}, 2000, function() { $(this).css('borderColor', ''); });
-				} else {
-					$(par).find('.spacer').width( 0 ).animate({'width':spacerWidth}, 200);
-					$(par).find('.jfVal').css('opacity', 0).animate({'opacity':0.95}, 400);
-				}
-				$(this).css(($.browser.msie) ? {'margin-top':1,'position':'absolute'} : {'position':'absolute'}).parent().find('.jValRelWrap').css('display', 'block');
-			});
+	this.showWarning = function (elements, message, autoHide, styleType) {
+		var par = $(elements).eq(0).parent();
+		$(elements).css({'margin-top':'','position':'','borderColor':'red'});
+
+		$(par).find('.jfVal').stop().remove().end()
+			.find('.jValRelWrap').remove().end()
+			.append('<div class="jValRelWrap" style="display:none;"></div>')
+			.find('.jValRelWrap').append( $(elements).clone() );
+
+		var fieldWidth = $(par).find('.jValRelWrap').width(), fieldHeight = $(par).find('.jValRelWrap').height();
+		$(par).find('.jValRelWrap').css({'width':fieldWidth,'height':fieldHeight}).empty();
+		var paddedHeight = (fieldHeight + ($.fn.jVal.defaultPadding * 2)),
+			absoluteLeft = $(elements).eq(0).position().left,
+			absoluteTop = $(elements).eq(0).position().top;
+		$(elements).each(
+			function () {
+				absoluteLeft = Math.min( $(this).position().left, absoluteLeft );
+				absoluteTop = Math.min( $(this).position().top, absoluteTop );
+			}
+		);
+		$(elements).eq(0).before(
+			'<div class="jfVal' + ( styleType ? ' jfVal' + styleType : '' ) + '" style="left:' + (absoluteLeft - $.fn.jVal.defaultPadding - $.fn.jVal.defaultBorderWidth) + 'px; ' +
+				'top:' + (absoluteTop - $.fn.jVal.defaultPadding - $.fn.jVal.defaultBorderWidth + $.fn.jVal.IETopNudge) + 'px;">' +
+				( (styleType == 'pod') ? '<div class="spacerBorder" style="height:' + paddedHeight + 'px;">' : '' ) + 
+					'<div class="spacer' +  ( styleType ? ' spacer' + styleType : '' ) + '" style="height:' + paddedHeight + 'px;"></div>' +
+				( (styleType == 'pod') ? '</div>' : '' ) + 
+				'<div class="icon' + ( styleType ? ' icon' + styleType : '' ) + '" style="height:' + paddedHeight + 'px;"><div class="iconbg"></div></div>' +
+				'<div class="content' + ( styleType ? ' content' + styleType : '' ) + '" style="height:' + paddedHeight + 'px; line-height:' + paddedHeight + 'px;">' + message + '</div>' +
+			'</div>');
+		var spacerWidth = fieldWidth + ($.fn.jVal.defaultPadding * 2) + 8;
+		$(par).find(styleType == 'pod' ? '.spacerBorder' : '.jfVal').css('padding', parseInt($.fn.jVal.defaultBorderWidth) + 'px').corner("round tr br 3px");
+		$(par).find('.jfVal').width( spacerWidth + $(par).find('.icon').width() + $(par).find('.content').width() + $.fn.jVal.defaultPadding + $.fn.jVal.defaultBorderWidth);
+		if ( autoHide ) {
+			$(par).find('.spacer').width( spacerWidth ).animate({'opacity':0.95}, 2000).animate({'width':0}, 200);
+			$(par).find('.jfVal').css({'opacity':0.93,'borderWidth':0}).animate({'borderWidth':0}, 2000).animate({'opacity':0}, 200, function() { $(this).remove(); });
+			$(elements).stop().animate({'opacity':0.95}, 2000, function() { $(this).css('borderColor', ''); });
+		} else {
+			$(par).find('.spacer').width( 0 ).animate({'width':spacerWidth}, 200);
+			$(par).find('.jfVal').css('opacity', 0).animate({'opacity':0.95}, 400);
+		}
+		$(elements).each(
+			function () {
+				$(this).css( $(this).position() );
+			}
+		);
+		$(elements).css(($.browser.msie) ? {'margin-top':1,'position':'absolute'} : {'position':'absolute'}).removeClass('jfValContentZ').addClass('jfValContentZ');
+		$(par).find('.jValRelWrap').css('display', 'block');
 	};
 	function valKey (keyRE, e, cF, cA) {
 		if ( !(keyRE instanceof RegExp) ) return false;
@@ -53,38 +70,49 @@
 	$.fn.jVal = function () {
 		$(this).stop().find('.jfVal').stop().remove();
 		var passVal = true;
-		$(this).find('[jVal]').css('borderColor', '').each( function () {
-				try {
+		$(this).find('[jVal]:not(:disabled)').each( function () {
+//				try {
 					eval( 'var cmd = ' + $(this).attr('jVal') + ';' );
-					if ( cmd instanceof Object && ( cmd.valid instanceof RegExp && !cmd.valid.test($(this).val()) ) || ( cmd.valid instanceof Function && !cmd.valid($(this).val()) ) ) {
-						showWarning(this, cmd.message || $.fn.jVal.defaultMessage, cmd.autoHide || false, cmd.styleType || 'pod');
+					$(cmd.target || this).css('borderColor', '')
+					if ( cmd instanceof Object && cmd.valid instanceof RegExp && !cmd.valid.test($(this).val()) ) {
+						showWarning(cmd.target || this, cmd.message || $.fn.jVal.defaultMessage, cmd.autoHide || false, cmd.styleType || $.fn.jVal.defaultStylye);
 						passVal = false;
+					} else if ( cmd instanceof Object && cmd.valid instanceof Function ) {
+						var testFRet = cmd.valid( $(this).val(), this );
+						if ( testFRet === false || testFRet.length > 0 ) {
+							showWarning(cmd.target || this, testFRet || cmd.message || $.fn.jVal.defaultMessage, cmd.autoHide || false, cmd.styleType || $.fn.jVal.defaultStylye);
+							passVal = false;
+						}
 					} else if ( ( cmd instanceof RegExp && !cmd.test($(this).val()) ) || ( cmd instanceof Function && !cmd($(this).val()) ) ) {
-						showWarning(this, $.fn.jVal.defaultMessage);
+						showWarning(cmd.target || this, $.fn.jVal.defaultMessage);
 						passVal = false;
 					}
-				} catch(e) { return true; }
+//				} catch(e) { return true; }
 			});
 		return passVal;
 	};
-	$(document).ready( function () {
-			$('input[jVal]').bind("blur", function (e) {
-					$(this).parent().jVal();
-				});
-			$('input[jValKey]').bind("keypress", function (e) {
-					try {
-						eval( 'var cmd = ' + $(this).attr('jValKey') + ';' );
-						var keyTest = valKey( ( (cmd instanceof Object) ? cmd.valid : cmd ), e, (cmd instanceof Object) ? cmd.cFunc : null, (cmd instanceof Object) ? cmd.cArgs : null );
-						if ( keyTest == 0 ) {
-							showWarning(this, (( cmd instanceof Object && cmd.message) || $.fn.jVal.defaultKeyMessage).replace('%c', String.fromCharCode(e.keyCode || e.charCode)), true, cmd.styleType || 'pod');
-							return false;
-						} else if ( keyTest == -1 ) return false;
-						else $(this).css('borderColor', '').parent().find('.jfVal').remove();
-						return true;
-					} catch(e) { return true; }
-				});
-		});
+	$.fn.jVal.init = function () {
+		$('input[jVal]:not(:disabled)').unbind("blur").bind("blur", function (e) {
+				$(this).parent().jVal();
+			});
+		$('input[jValKey]').unbind("keypress").bind("keypress", function (e) {
+//				try {
+					eval( 'var cmd = ' + $(this).attr('jValKey') + ';' );
+					var keyTest = valKey( ( (cmd instanceof Object) ? cmd.valid : cmd ), e, (cmd instanceof Object) ? cmd.cFunc : null, (cmd instanceof Object) ? cmd.cArgs : null );
+					if ( keyTest == 0 ) {
+						showWarning(cmd.target || this, (( cmd instanceof Object && cmd.message) || $.fn.jVal.defaultKeyMessage).replace('%c', String.fromCharCode(e.keyCode || e.charCode)), true, cmd.styleType || $.fn.jVal.defaultStylye);
+						return false;
+					} else if ( keyTest == -1 ) return false;
+					else $(this).css('borderColor', '').parent().find('.jfVal').remove();
+					return true;
+//				} catch(e) { return true; }
+			});
+	}
+
+	$(document).ready( $.fn.jVal.init );
+	
 	$.fn.jVal.defaultMessage = 'Invalid entry';
+	$.fn.jVal.defaultStylye = 'pod';
 	$.fn.jVal.defaultKeyMessage = '"%c" Invalid character';
 	$.fn.jVal.defaultPadding = 3;
 	$.fn.jVal.defaultBorderWidth = 1;
