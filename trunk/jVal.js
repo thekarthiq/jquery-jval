@@ -1,6 +1,6 @@
 /*
  * jVal - dynamic jquery form field validation framework
- *	version 0.1.2
+ *	version 0.1.3
  * Author: Jim Palmer
  * Released under MIT license.
  */
@@ -14,8 +14,8 @@
 				$(par).find('.jValRelWrap').css({'width':fieldWidth,'height':fieldHeight}).empty();
 				var paddedHeight = (fieldHeight + ($.fn.jVal.defaultPadding * 2));
 				$(this).before(
-					'<div class="jfVal' + ( styleType ? ' jfVal' + styleType : '' ) + '" style="left:' + (($(this).offset()).left - $.fn.jVal.defaultPadding - $.fn.jVal.defaultBorderWidth) + 'px; ' +
-						'top:' + (($(this).offset()).top - $.fn.jVal.defaultPadding - $.fn.jVal.defaultBorderWidth + $.fn.jVal.IETopNudge) + 'px;">' +
+					'<div class="jfVal' + ( styleType ? ' jfVal' + styleType : '' ) + '" style="left:' + ($(this).position().left - $.fn.jVal.defaultPadding - $.fn.jVal.defaultBorderWidth) + 'px; ' +
+						'top:' + ($(this).position().top - $.fn.jVal.defaultPadding - $.fn.jVal.defaultBorderWidth + $.fn.jVal.IETopNudge) + 'px;">' +
 						( (styleType == 'pod') ? '<div class="spacerBorder" style="height:' + paddedHeight + 'px;">' : '' ) + 
 							'<div class="spacer' + ( styleType ? ' spacer' + styleType : '' ) + '" style="height:' + paddedHeight + 'px;"></div>' +
 						( (styleType == 'pod') ? '</div>' : '' ) + 
@@ -26,12 +26,12 @@
 				$(par).find(styleType == 'pod' ? '.spacerBorder' : '.jfVal').css('padding', parseInt($.fn.jVal.defaultBorderWidth) + 'px').corner("round tr br 3px");
 				$(par).find('.jfVal').width( spacerWidth + $(par).find('.icon').width() + $(par).find('.content').width() + $.fn.jVal.defaultPadding + $.fn.jVal.defaultBorderWidth);
 				if ( autoHide ) {
-					$(par).find('.spacer').width( spacerWidth ).animate({'opacity':1}, 2000).animate({'width':0}, 200);
-					$(par).find('.jfVal').css('borderWidth', 0).animate({'borderWidth':0}, 2000).animate({'opacity':0}, 200, function() { $(this).remove(); });
-					$(this).stop().animate({'opacity':1}, 2000, function() { $(this).css('borderColor', ''); });
+					$(par).find('.spacer').width( spacerWidth ).animate({'opacity':0.95}, 2000).animate({'width':0}, 200);
+					$(par).find('.jfVal').css({'opacity':0.93,'borderWidth':0}).animate({'borderWidth':0}, 2000).animate({'opacity':0}, 200, function() { $(this).remove(); });
+					$(this).stop().animate({'opacity':0.95}, 2000, function() { $(this).css('borderColor', ''); });
 				} else {
 					$(par).find('.spacer').width( 0 ).animate({'width':spacerWidth}, 200);
-					$(par).find('.jfVal').css('opacity', 0).animate({'opacity':1}, 400);
+					$(par).find('.jfVal').css('opacity', 0).animate({'opacity':0.95}, 400);
 				}
 				$(this).css(($.browser.msie) ? {'margin-top':1,'position':'absolute'} : {'position':'absolute'}).parent().find('.jValRelWrap').css('display', 'block');
 			});
