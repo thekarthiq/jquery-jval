@@ -7,10 +7,8 @@
 (function($) {
 	this.showWarning = function (elements, message, autoHide, styleType) {
 		var par = $(elements).eq(0).parent();
-		$(elements).css({'margin-top':'','position':'','borderColor':'red'});
-
 		$(par).jValClean().append('<div class="jValRelWrap" style="display:none;"></div>').find('.jValRelWrap').append( $(elements).clone() );
-
+		$(elements).css({'margin-top':'','position':'','borderColor':'red'});
 		var fieldWidth = $(par).find('.jValRelWrap').width(), fieldHeight = $(par).find('.jValRelWrap').height();
 		$(par).find('.jValRelWrap').css({'width':fieldWidth,'height':fieldHeight}).empty();
 		var paddedHeight = (fieldHeight + ($.fn.jVal.defaultPadding * 2)),
@@ -90,7 +88,7 @@
 	};
 	$.fn.jValClean = function (target) {
 		$(this).find('.jfVal').stop().remove();
-		$(target || this).css({'position':'','borderColor':''}).parent().find('.jValRelWrap').remove();
+		$(target || $(this).find('[jVal]')).css({'position':'','borderColor':''}).parent().find('.jValRelWrap').remove();
 		return this; // chainable
 	};
 	$.fn.jVal.init = function () {
@@ -98,16 +96,14 @@
 				$(this).parent().jVal();
 			});
 		$('input[jValKey]').unbind("keypress").bind("keypress", function (e) {
-//				try {
-					eval( 'var cmd = ' + $(this).attr('jValKey') + ';' );
-					var keyTest = valKey( ( (cmd instanceof Object) ? cmd.valid : cmd ), e, (cmd instanceof Object) ? cmd.cFunc : null, (cmd instanceof Object) ? cmd.cArgs : null );
-					if ( keyTest == 0 ) {
-						showWarning(cmd.target || this, (( cmd instanceof Object && cmd.message) || $.fn.jVal.defaultKeyMessage).replace('%c', String.fromCharCode(e.keyCode || e.charCode)), true, cmd.styleType || $.fn.jVal.defaultStylye);
-						return false;
-					} else if ( keyTest == -1 ) return false;
-					else $(this).css('borderColor', '').parent().find('.jfVal').remove();
-					return true;
-//				} catch(e) { return true; }
+				eval( 'var cmd = ' + $(this).attr('jValKey') + ';' );
+				var keyTest = valKey( ( (cmd instanceof Object) ? cmd.valid : cmd ), e, (cmd instanceof Object) ? cmd.cFunc : null, (cmd instanceof Object) ? cmd.cArgs : null );
+				if ( keyTest == 0 ) {
+					showWarning(cmd.target || this, (( cmd instanceof Object && cmd.message) || $.fn.jVal.defaultKeyMessage).replace('%c', String.fromCharCode(e.keyCode || e.charCode)), true, cmd.styleType || $.fn.jVal.defaultStylye);
+					return false;
+				} else if ( keyTest == -1 ) return false;
+				else $(this).css('borderColor', '').parent().find('.jfVal').remove();
+				return true;
 			});
 	}
 
