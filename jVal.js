@@ -73,8 +73,7 @@
 		$(this).find('[jVal]:not(:disabled)').each( function () {
 //				try {
 					eval( 'var cmd = ' + $(this).attr('jVal') + ';' );
-					$(cmd.target || this).css({'position':'','borderColor':''});
-					$('.jValRelWrap').remove();
+					$(cmd.target || this).css({'position':'','borderColor':''}).parent().find('.jValRelWrap').remove();
 					if ( cmd instanceof Object && cmd.valid instanceof RegExp && !cmd.valid.test($(this).val()) ) {
 						showWarning(cmd.target || this, cmd.message || $.fn.jVal.defaultMessage, cmd.autoHide || false, cmd.styleType || $.fn.jVal.defaultStylye);
 						passVal = false;
