@@ -9,10 +9,7 @@
 		var par = $(elements).eq(0).parent();
 		$(elements).css({'margin-top':'','position':'','borderColor':'red'});
 
-		$(par).find('.jfVal').stop().remove().end()
-			.find('.jValRelWrap').remove().end()
-			.append('<div class="jValRelWrap" style="display:none;"></div>')
-			.find('.jValRelWrap').append( $(elements).clone() );
+		$(par).jValClean().append('<div class="jValRelWrap" style="display:none;"></div>').find('.jValRelWrap').append( $(elements).clone() );
 
 		var fieldWidth = $(par).find('.jValRelWrap').width(), fieldHeight = $(par).find('.jValRelWrap').height();
 		$(par).find('.jValRelWrap').css({'width':fieldWidth,'height':fieldHeight}).empty();
@@ -70,26 +67,31 @@
 	$.fn.jVal = function () {
 		$(this).stop().find('.jfVal').stop().remove();
 		var passVal = true;
-		$(this).find('[jVal]:not(:disabled)').each( function () {
-//				try {
-					eval( 'var cmd = ' + $(this).attr('jVal') + ';' );
-					$(cmd.target || this).css({'position':'','borderColor':''}).parent().find('.jValRelWrap').remove();
-					if ( cmd instanceof Object && cmd.valid instanceof RegExp && !cmd.valid.test($(this).val()) ) {
-						showWarning(cmd.target || this, cmd.message || $.fn.jVal.defaultMessage, cmd.autoHide || false, cmd.styleType || $.fn.jVal.defaultStylye);
-						passVal = false;
-					} else if ( cmd instanceof Object && cmd.valid instanceof Function ) {
-						var testFRet = cmd.valid( $(this).val(), this );
-						if ( testFRet === false || testFRet.length > 0 ) {
-							showWarning(cmd.target || this, testFRet || cmd.message || $.fn.jVal.defaultMessage, cmd.autoHide || false, cmd.styleType || $.fn.jVal.defaultStylye);
-							passVal = false;
-						}
-					} else if ( ( cmd instanceof RegExp && !cmd.test($(this).val()) ) || ( cmd instanceof Function && !cmd($(this).val()) ) ) {
-						showWarning(cmd.target || this, $.fn.jVal.defaultMessage);
+		$(this).find('[jVal]:not(:disabled)').each(
+			function () {
+				eval( 'var cmd = ' + $(this).attr('jVal') + ';' );
+				$(this).jValClean(cmd.target);
+				if ( cmd instanceof Object && cmd.valid instanceof RegExp && !cmd.valid.test($(this).val()) ) {
+					showWarning(cmd.target || this, cmd.message || $.fn.jVal.defaultMessage, cmd.autoHide || false, cmd.styleType || $.fn.jVal.defaultStylye);
+					passVal = false;
+				} else if ( cmd instanceof Object && cmd.valid instanceof Function ) {
+					var testFRet = cmd.valid( $(this).val(), this );
+					if ( testFRet === false || testFRet.length > 0 ) {
+						showWarning(cmd.target || this, testFRet || cmd.message || $.fn.jVal.defaultMessage, cmd.autoHide || false, cmd.styleType || $.fn.jVal.defaultStylye);
 						passVal = false;
 					}
-//				} catch(e) { return true; }
-			});
+				} else if ( ( cmd instanceof RegExp && !cmd.test($(this).val()) ) || ( cmd instanceof Function && !cmd($(this).val()) ) ) {
+					showWarning(cmd.target || this, $.fn.jVal.defaultMessage);
+					passVal = false;
+				}
+			}
+		);
 		return passVal;
+	};
+	$.fn.jValClean = function (target) {
+		$(this).find('.jfVal').stop().remove();
+		$(target || this).css({'position':'','borderColor':''}).parent().find('.jValRelWrap').remove();
+		return this; // chainable
 	};
 	$.fn.jVal.init = function () {
 		$('input[jVal]:not(:disabled)').unbind("blur").bind("blur", function (e) {
