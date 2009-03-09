@@ -40,11 +40,13 @@
 			$(par).find('.spacer').width( 0 ).animate({'width':spacerWidth}, 200);
 			$(par).find('.jfVal').css('opacity', 0).animate({'opacity':0.95}, 400);
 		}
+/* this causes the form fields to bounce around the screen
 		$(elements).each(
 			function () {
 				$(this).css( $(this).position() );
 			}
 		);
+*/
 		$(elements).css(($.browser.msie) ? {'margin-top':1,'position':'absolute'} : {'position':'absolute'}).removeClass('jfValContentZ').addClass('jfValContentZ');
 		$(par).find('.jValRelWrap').css('display', 'block');
 	};
