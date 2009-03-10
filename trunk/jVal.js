@@ -99,6 +99,7 @@
 				eval( 'var cmd = ' + $(this).attr('jValKey') + ';' );
 				var keyTest = valKey( ( (cmd instanceof Object) ? cmd.valid : cmd ), e, (cmd instanceof Object) ? cmd.cFunc : null, (cmd instanceof Object) ? cmd.cArgs : null );
 				if ( keyTest == 0 ) {
+					$(this).jValClean(cmd.target || this);
 					showWarning(cmd.target || this, (( cmd instanceof Object && cmd.message) || $.fn.jVal.defaultKeyMessage).replace('%c', String.fromCharCode(e.keyCode || e.charCode)), true, cmd.styleType || $.fn.jVal.defaultStylye);
 					return false;
 				} else if ( keyTest == -1 ) return false;
