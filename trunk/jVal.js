@@ -8,7 +8,7 @@
 	this.showWarning = function (elements, message, autoHide, styleType) {
 		var par = $(elements).eq(0).parent();
 		$(par).jValClean().append('<div class="jValRelWrap" style="display:none;"></div>').find('.jValRelWrap').append( $(elements).clone() );
-		$(elements).css({'margin-top':'','position':'','borderColor':'red'});
+		$(elements).css({marginTop:'',position:'',borderColor:'red'});
 		var fieldWidth = $(par).find('.jValRelWrap').width(), fieldHeight = $(par).find('.jValRelWrap').height();
 		$(par).find('.jValRelWrap').css({'width':fieldWidth,'height':fieldHeight}).empty();
 		var paddedHeight = (fieldHeight + ($.fn.jVal.defaultPadding * 2)),
@@ -40,13 +40,11 @@
 			$(par).find('.spacer').width( 0 ).animate({'width':spacerWidth}, 200);
 			$(par).find('.jfVal').css('opacity', 0).animate({'opacity':0.95}, 400);
 		}
-/* this causes the form fields to bounce around the screen
 		$(elements).each(
 			function () {
 				$(this).css( $(this).position() );
 			}
 		);
-*/
 		$(elements).css(($.browser.msie) ? {'margin-top':1,'position':'absolute'} : {'position':'absolute'}).removeClass('jfValContentZ').addClass('jfValContentZ');
 		$(par).find('.jValRelWrap').css('display', 'block');
 	};
@@ -67,10 +65,10 @@
 	$.fn.jVal = function () {
 		$(this).stop().find('.jfVal').stop().remove();
 		var passVal = true;
-		$(this).find('[jVal]:not(:disabled)').each(
+		$(this).find('[jVal]:not(:disabled):visible').each(
 			function () {
 				eval( 'var cmd = ' + $(this).attr('jVal') + ';' );
-				$(this).jValClean(cmd.target);
+				$(this).jValClean(cmd.target || this);
 				if ( cmd instanceof Object && cmd.valid instanceof RegExp && !cmd.valid.test($(this).val()) ) {
 					showWarning(cmd.target || this, cmd.message || $.fn.jVal.defaultMessage, cmd.autoHide || false, cmd.styleType || $.fn.jVal.defaultStylye);
 					passVal = false;
@@ -90,7 +88,7 @@
 	};
 	$.fn.jValClean = function (target) {
 		$(this).find('.jfVal').stop().remove();
-		$(target || $(this).find('[jVal]')).css({'position':'','borderColor':''}).parent().find('.jValRelWrap').remove();
+		$(target || $(this).find('[jVal]')).css({position:'',borderColor:'',left:'0px',top:'0px'}).parent().find('.jValRelWrap').remove();
 		return this; // chainable
 	};
 	$.fn.jVal.init = function () {
@@ -107,7 +105,7 @@
 				else $(this).css('borderColor', '').parent().find('.jfVal').remove();
 				return true;
 			});
-	}
+	};
 
 	$(document).ready( $.fn.jVal.init );
 	
