@@ -7,10 +7,11 @@
 (function($) {
 	this.showWarning = function (elements, message, autoHide, styleType) {
 		var par = $(elements).eq(0).parent();
+		clearTimeout( $(par).data('autoHide') ) && $(par).data('autoHide', null);
 		$(par).jValClean().append('<div class="jValRelWrap" style="display:none;"></div>').find('.jValRelWrap').append( $(elements).clone() );
 		$(elements).css({marginTop:'',position:'',borderColor:'red'});
 		var fieldWidth = $(par).find('.jValRelWrap').width(), fieldHeight = $(par).find('.jValRelWrap').height();
-		$(par).find('.jValRelWrap').css({'width':fieldWidth,'height':fieldHeight}).empty();
+		$(par).find('.jValRelWrap').css({width:fieldWidth,height:fieldHeight}).empty();
 		var paddedHeight = (fieldHeight + ($.fn.jVal.defaultPadding * 2)),
 			absoluteLeft = $(elements).eq(0).position().left,
 			absoluteTop = $(elements).eq(0).position().top;
@@ -30,23 +31,18 @@
 				'<div class="content' + ( styleType ? ' content' + styleType : '' ) + '" style="height:' + paddedHeight + 'px; line-height:' + paddedHeight + 'px;">' + message + '</div>' +
 			'</div>');
 		var spacerWidth = fieldWidth + ($.fn.jVal.defaultPadding * 2) + 8;
-		$(par).find(styleType == 'pod' ? '.spacerBorder' : '.jfVal').css('padding', parseInt($.fn.jVal.defaultBorderWidth) + 'px').corner("round tr br 3px");
+		$(par).find(styleType == 'pod' ? '.spacerBorder' : '.jfVal').css({padding:parseInt($.fn.jVal.defaultBorderWidth) + 'px'}).corner("round tr br 3px");
 		$(par).find('.jfVal').width( spacerWidth + $(par).find('.icon').width() + $(par).find('.content').width() + $.fn.jVal.defaultPadding + $.fn.jVal.defaultBorderWidth);
-		if ( autoHide ) {
-			$(par).find('.spacer').width( spacerWidth ).animate({'opacity':0.95}, 2000).animate({'width':0}, 200);
-			$(par).find('.jfVal').css({'opacity':0.93,'borderWidth':0}).animate({'borderWidth':0}, 2000).animate({'opacity':0}, 200, function() { $(this).remove(); });
-			$(elements).stop().animate({'opacity':0.95}, 2000, function() { $(this).css('borderColor', ''); });
-		} else {
-			$(par).find('.spacer').width( 0 ).animate({'width':spacerWidth}, 200);
-			$(par).find('.jfVal').css('opacity', 0).animate({'opacity':0.95}, 400);
-		}
-		$(elements).each(
-			function () {
-				$(this).css( $(this).position() );
-			}
-		);
-		$(elements).css(($.browser.msie) ? {'margin-top':1,'position':'absolute'} : {'position':'absolute'}).removeClass('jfValContentZ').addClass('jfValContentZ');
-		$(par).find('.jValRelWrap').css('display', 'block');
+		// autoHide = set spacer width + add autohide function to fx queue
+		if ( autoHide )
+			$(par).data( 'autoHide', setTimeout(function () { $(par).find('.spacer').animate({width:10}, 200, function () { $(par).jValClean(); }); }, 2000) )
+				.find('.spacer').width( spacerWidth );
+		else
+			$(par).find('.spacer').width( 10 ).animate({'width':spacerWidth}, 200);
+		// reposition the elements since change to absolute
+		$(elements).each(function () { $(this).css( $(this).position() ); })
+			.css({position:'absolute'}).removeClass('jfValContentZ').addClass('jfValContentZ');
+		$(par).find('.jValRelWrap').css({display:'block'});
 	};
 	function valKey (keyRE, e, cF, cA) {
 		if ( !(keyRE instanceof RegExp) ) return false;
@@ -103,13 +99,13 @@
 					showWarning(cmd.target || this, (( cmd instanceof Object && cmd.message) || $.fn.jVal.defaultKeyMessage).replace('%c', String.fromCharCode(e.keyCode || e.charCode)), true, cmd.styleType || $.fn.jVal.defaultStylye);
 					return false;
 				} else if ( keyTest == -1 ) return false;
-				else $(this).css('borderColor', '').parent().find('.jfVal').remove();
+				else $(this).css({borderColor:''}).parent().find('.jfVal').remove();
 				return true;
 			});
 	};
-
-	$(document).ready( $.fn.jVal.init );
-	
+	// automatically init
+	$($.fn.jVal.init);
+	// setup jVal defaults
 	$.fn.jVal.defaultMessage = 'Invalid entry';
 	$.fn.jVal.defaultStylye = 'pod';
 	$.fn.jVal.defaultKeyMessage = '"%c" Invalid character';
