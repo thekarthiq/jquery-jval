@@ -28,7 +28,9 @@
 					'<div class="spacer' +  ( styleType ? ' spacer' + styleType : '' ) + '" style="height:' + paddedHeight + 'px;"></div>' +
 				( (styleType == 'pod') ? '</div>' : '' ) + 
 				'<div class="icon' + ( styleType ? ' icon' + styleType : '' ) + '" style="height:' + paddedHeight + 'px;"><div class="iconbg"></div></div>' +
-				'<div class="content' + ( styleType ? ' content' + styleType : '' ) + '" style="height:' + paddedHeight + 'px; line-height:' + paddedHeight + 'px;">' + message + '</div>' +
+				'<div class="content' + ( styleType ? ' content' + styleType : '' ) + '" style="height:' + paddedHeight + 'px; line-height:' + paddedHeight + 'px;">' +
+					'<span class="message' + styleType + '">' + message + '</span>' +
+				'</div>' +
 			'</div>');
 		var spacerWidth = fieldWidth + ($.fn.jVal.defaultPadding * 2) + 8;
 		$(par).find(styleType == 'pod' ? '.spacerBorder' : '.jfVal').css({padding:parseInt($.fn.jVal.defaultBorderWidth) + 'px'}).corner("round tr br 3px");
