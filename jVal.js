@@ -51,7 +51,8 @@
 		if ( /^13$/.test(String(e.keyCode || e.charCode)) ) {
 			try { (this[cF]) ? this[cF](cA) : eval(cF); } catch(e) { return true; }
 			return -1;
-		} else if (	( typeof(e.keyCode) != 'undefined' && e.keyCode > 0 && keyRE.test(String.fromCharCode(e.keyCode)) ) || 
+		} else if (	e.ctrlKey || e.shiftKey || e.metaKey || 
+					( typeof(e.keyCode) != 'undefined' && e.keyCode > 0 && keyRE.test(String.fromCharCode(e.keyCode)) ) || 
 					( typeof(e.charCode) != 'undefined' && e.charCode > 0 && String.fromCharCode(e.charCode).search(keyRE) != (-1) ) ||
 					( typeof(e.charCode) != 'undefined' && e.charCode != e.keyCode && typeof(e.keyCode) != 'undefined' && e.keyCode.toString().search(/^(8|9|45|46|35|36|37|39)$/) != (-1) ) ||
 					( typeof(e.charCode) != 'undefined' && e.charCode == e.keyCode && typeof(e.keyCode) != 'undefined' && e.keyCode.toString().search(/^(8|9)$/) != (-1) ) ) {
