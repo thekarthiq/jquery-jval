@@ -44,11 +44,11 @@
 	color: red;
 	vertical-align: middle;
 	white-space:nowrap;
-	background: #fff;
 }
 .jfVal .messagepod {
 	opacity: 0.8;
 	background: #fff;
+	padding:2px 5px;
 }
 .jfVal .contentcover {
 	background: #eee url(eeGrad2.gif) bottom repeat-x;
