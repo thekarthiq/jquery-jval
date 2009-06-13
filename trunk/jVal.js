@@ -24,16 +24,16 @@
 		$(elements).eq(0).before(
 			'<div class="jfVal' + ( styleType ? ' jfVal' + styleType : '' ) + '" style="left:' + (absoluteLeft - $.fn.jVal.defaultPadding - $.fn.jVal.defaultBorderWidth) + 'px; ' +
 				'top:' + (absoluteTop - $.fn.jVal.defaultPadding - $.fn.jVal.defaultBorderWidth + $.fn.jVal.IETopNudge) + 'px;">' +
-				( (styleType == 'pod') ? '<div class="spacerBorder" style="height:' + paddedHeight + 'px;">' : '' ) + 
+				( (styleType == 'pod') ? '<div class="spacerBorder" style="height:' + paddedHeight + 'px;">' : '' ) +
 					'<div class="spacer' +  ( styleType ? ' spacer' + styleType : '' ) + '" style="height:' + paddedHeight + 'px;"></div>' +
-				( (styleType == 'pod') ? '</div>' : '' ) + 
+				( (styleType == 'pod') ? '</div>' : '' ) +
 				'<div class="icon' + ( styleType ? ' icon' + styleType : '' ) + '" style="height:' + paddedHeight + 'px;"><div class="iconbg"></div></div>' +
 				'<div class="content' + ( styleType ? ' content' + styleType : '' ) + '" style="height:' + paddedHeight + 'px; line-height:' + paddedHeight + 'px;">' +
 					'<span class="message' + styleType + '">' + message + '</span>' +
 				'</div>' +
 			'</div>');
 		var spacerWidth = fieldWidth + ($.fn.jVal.defaultPadding * 2) + 8;
-		$(par).find(styleType == 'pod' ? '.spacerBorder' : '.jfVal').css({padding:parseInt($.fn.jVal.defaultBorderWidth) + 'px'}).corner("round tr br 3px");
+		$(par).find(styleType == 'pod' ? '.spacerBorder' : '.jfVal').css({padding:parseInt($.fn.jVal.defaultBorderWidth) + 'px'});
 		$(par).find('.jfVal').width( spacerWidth + $(par).find('.icon').width() + $(par).find('.content').width() + $.fn.jVal.defaultPadding + $.fn.jVal.defaultBorderWidth);
 		// autoHide = set spacer width + add autohide function to fx queue
 		if ( autoHide )
@@ -51,8 +51,8 @@
 		if ( /^13$/.test(String(e.keyCode || e.charCode)) ) {
 			try { (this[cF]) ? this[cF](cA) : eval(cF); } catch(e) { return true; }
 			return -1;
-		} else if (	e.ctrlKey || e.shiftKey || e.metaKey || 
-					( typeof(e.keyCode) != 'undefined' && e.keyCode > 0 && keyRE.test(String.fromCharCode(e.keyCode)) ) || 
+		} else if (	e.ctrlKey || e.shiftKey || e.metaKey ||
+					( typeof(e.keyCode) != 'undefined' && e.keyCode > 0 && keyRE.test(String.fromCharCode(e.keyCode)) ) ||
 					( typeof(e.charCode) != 'undefined' && e.charCode > 0 && String.fromCharCode(e.charCode).search(keyRE) != (-1) ) ||
 					( typeof(e.charCode) != 'undefined' && e.charCode != e.keyCode && typeof(e.keyCode) != 'undefined' && e.keyCode.toString().search(/^(8|9|45|46|35|36|37|39)$/) != (-1) ) ||
 					( typeof(e.charCode) != 'undefined' && e.charCode == e.keyCode && typeof(e.keyCode) != 'undefined' && e.keyCode.toString().search(/^(8|9)$/) != (-1) ) ) {
@@ -64,9 +64,10 @@
 	$.fn.jVal = function () {
 		$(this).stop().find('.jfVal').stop().remove();
 		var passVal = true;
-		$(this).find('[jVal]:not(:disabled):visible').each(
+		$(this).find('.jVal,[jVal]:not(:disabled):visible').each(
 			function () {
-				eval( 'var cmd = ' + $(this).attr('jVal') + ';' );
+				var cmd = $(this).data('jVal');
+				if ( typeof cmd !== 'object' ) eval( 'cmd = ' + ( $(this).data('jVal') || $(this).attr('jVal') ) + ';' );
 				$(this).jValClean(cmd.target || this);
 				if ( cmd instanceof Object && cmd.valid instanceof RegExp && !cmd.valid.test($(this).val()) ) {
 					showWarning(cmd.target || this, cmd.message || $.fn.jVal.defaultMessage, cmd.autoHide || false, cmd.styleType || $.fn.jVal.defaultStylye);
@@ -87,15 +88,16 @@
 	};
 	$.fn.jValClean = function (target) {
 		$(this).find('.jfVal').stop().remove();
-		$(target || $(this).find('[jVal]')).css({position:'',borderColor:'',left:'0px',top:'0px'}).parent().find('.jValRelWrap').remove();
+		$(target || $(this).find('.jVal,[jVal]')).css({position:'',borderColor:'',left:'0px',top:'0px'}).parent().find('.jValRelWrap').remove();
 		return this; // chainable
 	};
 	$.fn.jVal.init = function () {
-		$('input[jVal]:not(:disabled)').unbind("blur").bind("blur", function (e) {
+		$('.jVal,[jVal]:not(:disabled)').unbind("blur").bind("blur", function (e) {
 				$(this).parent().jVal();
 			});
-		$('input[jValKey]').unbind("keypress").bind("keypress", function (e) {
-				eval( 'var cmd = ' + $(this).attr('jValKey') + ';' );
+		$('.jValKey,[jValKey]').unbind("keypress").bind("keypress", function (e) {
+				var cmd = $(this).data('jValKey');
+				if ( typeof cmd !== 'object' ) eval( 'cmd = ' + ( $(this).data('jValKey') || $(this).attr('jValKey') ) + ';' );
 				var keyTest = valKey( ( (cmd instanceof Object) ? cmd.valid : cmd ), e, (cmd instanceof Object) ? cmd.cFunc : null, (cmd instanceof Object) ? cmd.cArgs : null );
 				if ( keyTest == 0 ) {
 					$(this).jValClean(cmd.target || this);
