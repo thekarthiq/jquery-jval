@@ -2,7 +2,6 @@
 <html>
 <head>
 	<script language="JavaScript" type="text/javascript" src="jquery.js"></script>
-	<script language="JavaScript" type="text/javascript" src="jquery.corner.js"></script>
 	<script language="JavaScript" type="text/javascript" src="jVal.js"></script>
 	<link rel="stylesheet" type="text/css" href="jVal.css">
 	<style>
@@ -16,14 +15,17 @@
 	</style>
 </head>
 <body marginheight=0 marginwidth=0 topmargin=0 rightmargin=0 leftmargin=0>
-	<table border=0 id="formContainer" style="padding:10px;">
+	<table border=0 id="form_cover" style="padding:10px;">
+		<tr>
+			<td colspan="2" style="font-weight:bold;">#form_cover</td>
+		</tr>
 		<tr>
 			<td align=right style="padding-right:5px; color:#000;">
 				First Name
 			</td>
 			<td align=left>
-				<input id="f1" type=text size=20
-					jVal="{valid:function (val) { if (val.length < 3) return false; else return true; }, message:'Required Field', styleType:'cover'}">
+				<input id="f1" type="text" size="20"
+					jVal="{valid:function (val) { if (val.length < 3) return 'Invalid Name'; else return ''; }, styleType:'cover'}">
 			</td>
 		</tr>
 		<tr>
@@ -33,8 +35,21 @@
 			<td align=left>
 				<input id="f3" type=text size=40
 					jVal="{valid:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/, message:'Invalid Email Address', styleType:'cover'}"
-					jValKey="{valid:/[a-zA-Z0-9._%+-@]/, cFunc:'alert', cArgs:['Email Address: '+$(this).val()]}">
+					jValKey="{valid:/[a-zA-Z0-9._%+-@]/, cFunc:'alert', cArgs:['Email Address: '+$(this).val()], styleType:'cover'}">
 			</td>
+		</tr>
+
+		<tr>
+			<td></td>
+			<td style="padding:5px;">
+				<input id="submitButton" type=button value="validate #form_cover" onClick="if ( $('#form_cover').jVal({padding:3,border:1,wrap:true}) ) alert('success - submit form');">
+			</td>
+		</tr>
+	</table>
+
+	<table border=0 id="form_pod" style="padding:10px;">
+		<tr>
+			<td colspan="2" style="font-weight:bold;">#form_pod</td>
 		</tr>
 		<tr>
 			<td align=right style="padding-right:5px;color:#000;">
@@ -43,8 +58,8 @@
 			</td>
 			<td align=left>
 				<input id="f5" type=text maxlength=10 size=10
-					jVal="{valid:function (val) { if (val.length != 10) return false; else return true; }, message:'10 Digits for Phone Required', styleType:'cover'}"
-					jValKey="{valid:/[0-9]/, message:'&quot;%c&quot; Invalid Character - Only Digits Allowed', cFunc:'$(\'#formContainer\').jVal()'}">
+					jVal="{valid:function (val) { if (val.length != 10) return false; else return true; }, message:'10 Digits for Phone Required', styleType:'pod'}"
+					jValKey="{valid:/[0-9]/, message:'&quot;%c&quot; Invalid Character - Only Digits Allowed', cFunc:'$(\'#formContainer\').jVal()', styleType:'pod'}">
 			</td>
 		</tr>
 		<tr>
@@ -109,9 +124,33 @@
 		<tr>
 			<td></td>
 			<td style="padding:5px;">
-				<input id="submitButton" type=button value="submit form" onClick="if ( $('#formContainer').jVal() ) alert('success - submit form');">
+				<input id="submitButton" type=button value="validate #form_pod" onClick="if ( $('#form_pod').jVal({padding:3,border:1,wrap:true}) ) alert('success - submit form');">
 			</td>
 		</tr>
 	</table>
+
+	<table border=0 id="form_blank" style="padding:10px;">
+		<tr>
+			<td colspan="2" style="font-weight:bold;">#form_blank</td>
+		</tr>
+		<tr>
+			<td align=right style="padding-right:5px;color:#000;">
+				2nd Email Address<br />
+				<span style="color:#808080; font-size:8pt;">"blank" sytle</span>
+			</td>
+			<td align=left>
+				<input id="e_mail" type=text size=40
+					jVal="{valid:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/, message:'Invalid Email Address', styleType:'blank'}">
+			</td>
+		</tr>
+
+		<tr>
+			<td></td>
+			<td style="padding:5px;">
+				<input id="submitButton" type=button value="validate #form_blank" onClick="if ( $('#form_blank').jVal({padding:8,border:0,wrap:false}) ) alert('success - submit form');">
+			</td>
+		</tr>
+	</table>
+
 </body>
 </html>
