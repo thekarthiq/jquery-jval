@@ -85,10 +85,10 @@
 				$(par).find('.jValSpacer:first').clone().css({clip:clips[si]}) );
 		// autoHide = set spacer width + add autohide function to fx queue
 		if ( autoHide )
-			$(par).data( 'autoHide', setTimeout(function () { $(par).find('.jfVal').animate({left:lPos}, 200, function () { $.fn.jVal.clean(par); }); }, 2000) )
+			$(par).data( 'autoHide', setTimeout(function () { $(par).find('.jfVal').animate({left:lPos,opacity:0}, 200, function () { $.fn.jVal.clean(par); }); }, 2000) )
 				.find('.jfVal').css({'left':rPos});
 		else
-			$(par).find('.jfVal').animate({'left':rPos}, 200);
+			$(par).find('.jfVal').css({opacity:0}).animate({left:rPos,opacity:1}, 200);
 	};
 	// validate key stroke
 	$.fn.jVal.valKey = function (keyRE, e, cF, cA) {
