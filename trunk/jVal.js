@@ -29,7 +29,7 @@
 						passVal = false;
 					}
 				} else if ( ( cmd instanceof RegExp && !cmd.test($(this).val()) ) || ( cmd instanceof Function && !cmd($(this).val()) ) ) {
-					$.fn.jVal.showWarning(cmd.target || this, dm);
+					$.fn.jVal.showWarning(cmd.target || this, dm, cmd.autoHide || false, cmd.styleType || ds);
 					passVal = false;
 				}
 			}
