@@ -54,11 +54,8 @@
 			absoluteLeft = Math.min( $(this).position().left, absoluteLeft );
 			absoluteTop = Math.min( $(this).position().top, absoluteTop );
 		});
-		var tPos = absoluteTop - dp - dbw,
-			lPos = absoluteLeft + dp,
-			rPos = absoluteLeft + fieldWidth + dp,
-			ph = (fieldHeight + (dp * 2)),
-			fhp = fieldHeight + dp + dbw, fwp = fieldWidth + dp,
+		var fwidth = 0, tPos = absoluteTop - dp - dbw, lPos = absoluteLeft + dp, rPos = absoluteLeft + fieldWidth + dp,
+			ph = (fieldHeight + (dp * 2)), fhp = fieldHeight + dp + dbw, fwp = fieldWidth + dp,
 			clips = [ 
 				'rect(0px, 5000px, ' + (dp + dbw) + 'px, 0px)', // top
 				'rect(' + fhp + 'px, 5000px, 5000px, 0px)', // bottom
@@ -79,7 +76,9 @@
 				'<div class="content' + ( styleType ? ' content' + styleType : '' ) + '" style="height:' + ph + 'px; line-height:' + ph + 'px;">' +
 					'<span class="message' + styleType + '">' + message + '</span>' +
 				'</div>' +
-			'</div>');
+			'</div>')
+			.parent().find('.jfVal>*').each(function () { fwidth += $(this).outerWidth() }).end()
+			.find('.jfVal').width(fwidth + 20);
 		for (var si = 1; si < 4; si++) 
 			$(par).find('.jValSpacer:first').before( 
 				$(par).find('.jValSpacer:first').clone().css({clip:clips[si]}) );
